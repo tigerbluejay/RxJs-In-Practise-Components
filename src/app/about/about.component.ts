@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Observable, concat, fromEvent, interval, noop, of, timer } from 'rxjs';
+import { Observable, concat, fromEvent, interval, merge, noop, of, timer } from 'rxjs';
 import { createHttpObservable } from '../common/util';
 import { map } from 'rxjs/operators';
 
@@ -176,15 +176,28 @@ export class AboutComponent implements OnInit {
 
     ///////////////////////// OBSERVABLE CONCATENATION  //////////////////
 
-    // the of function, is useful for defining observables
-    const source1$ = of(1, 2, 3);
-    const source2$ = of(4, 5, 6);
-    const source3$ = of(7, 8, 9);
+    // // the of function, is useful for defining observables
+    // const source1$ = of(1, 2, 3);
+    // const source2$ = of(4, 5, 6);
+    // const source3$ = of(7, 8, 9);
 
-    const results$ = concat(source1$, source2$, source3$);
+    // const results$ = concat(source1$, source2$, source3$);
 
-    // only when we subscribe will the concatenation execute
-    results$.subscribe(console.log);
+    // // only when we subscribe will the concatenation execute
+    // results$.subscribe(console.log);
+
+
+    /////////////////////// MERGE OBSERVABLE COMBINATION ///////////////////
+    // // we can combine observables merging them (alternatively to observable concatenation)
+    // // we use if we want to take multiple observables, ideal for performing asynchronous operations in parallel.
+
+    // const interval1$ = interval(1000);
+
+    // const interval2$ = interval1$.pipe(map(val => 10 * val));
+
+    // const result$ = merge(interval1$, interval2$);
+
+    // result$.subscribe(console.log);
 
   }
 }
