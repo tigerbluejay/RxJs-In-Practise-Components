@@ -199,5 +199,32 @@ export class AboutComponent implements OnInit {
 
     // result$.subscribe(console.log);
 
+    ////////////////////// CANCELLATION OF OBSERVABLES /////////////////////
+
+    // // we create an interval observable
+    // // that issues a new value every second
+    // const interval1$ = interval(1000);
+
+    // // the subscribe method returns a subscription object
+    // // sub is a subscription object we need to create for cancellation
+    // const sub = interval1$.subscribe(console.log);
+
+    // // we unsubscribe from the observable or cancel it
+    // setTimeout(() => sub.unsubscribe(), 5000);
+
+    // so...
+
+    // define an http observable calling the url.
+    const http$ = createHttpObservable('/api/courses');
+    
+    // subscribing will trigger a request which will be logged
+    // to the console.
+    const sub = http$.subscribe(console.log);
+    
+    // here we call unsubscribe after 0 seconds after the http request
+    // the browser will trigger the ajax request which will be cancelled
+    // straight away.
+    setTimeout(() => sub.unsubscribe(), 0);
+
   }
 }

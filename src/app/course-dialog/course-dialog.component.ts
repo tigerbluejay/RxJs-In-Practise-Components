@@ -90,6 +90,17 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
             .subscribe();
     }
 
+        ///////////////////////////////// MERGE MAP //////////////////////////////////////////////
+        // mergeMap is an observable combinations strategy where our requests do not wait till the last
+        // one is finished to begin a new one. merge is ideal for making http requests in parallel.
+        // if you want to make calls in parallel and fetch the results of each call as they arrive.
+        // this.form.valueChanges
+        // .pipe(
+        //     filter(() => this.form.valid),
+            // mergeMap(changes => this.saveCourse(changes))
+        // )
+        // .subscribe();
+
     saveCourse(changes) {
         return fromPromise(fetch(`/api/courses/${this.course.id}`, {
             method: 'PUT',
@@ -103,6 +114,19 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit() {
 
+        ////////////////////////////////// EXHAUST MAP /////////////////////////////////////////////
+        // exhaust map operator, if the source observable emits values while the mapping
+        // operation is taking place, those values will be ignored.
+        // in this example this prevents the save operation to execute say 5 times if we clicked on
+        // the save button 5 times if during those clicks the first of those saves was being processed
+        // in other words only once the operation triggered by the first source click exhausts, only
+        // then are additional source observable operations (clicks) taken into further account.
+
+        fromEvent(this.saveButton.nativeElement, 'click')
+            .pipe(
+                exhaustMap(() => this.saveCourse(this.form.value))
+            )
+            .subscribe();
 
     }
 
