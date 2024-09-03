@@ -15,7 +15,7 @@ import {
     throttle,
     throttleTime
 } from 'rxjs/operators';
-import {merge, fromEvent, Observable, concat, interval} from 'rxjs';
+import {merge, fromEvent, Observable, concat, interval, forkJoin} from 'rxjs';
 import {Lesson} from '../model/lesson';
 import { createHttpObservable } from '../common/util';
 import { debug, RxJsLoggingLevel, setRxJsLoggingLevel } from '../common/debug';
@@ -41,23 +41,47 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
     }
 
+    // ngOnInit() {
+
+    //     this.courseId = this.route.snapshot.params['id'];
+
+    //     this.course$ = createHttpObservable(`/api/courses/${this.courseId}`)
+    //         .pipe(
+    //             debug( RxJsLoggingLevel.INFO, "course value ")
+    //         );
+
+    //     // this will load us an intial batch of lessons without any filtering applied
+    //     // this.lessons$ = this.loadLessons();
+
+
+    //     // this will set the logging level as defined in debug.ts to DEBUG
+    //     setRxJsLoggingLevel(RxJsLoggingLevel.TRACE);
+
+    // }
+
     ngOnInit() {
 
         this.courseId = this.route.snapshot.params['id'];
 
-        this.course$ = createHttpObservable(`/api/courses/${this.courseId}`)
-            .pipe(
-                debug( RxJsLoggingLevel.INFO, "course value ")
-            );
+        const course$ = createHttpObservable(`/api/courses/${this.courseId}`);
 
-        // this will load us an intial batch of lessons without any filtering applied
-        // this.lessons$ = this.loadLessons();
+        // fetches a list of lessons
+        const lessons$ = this.loadLessons();
 
-
-        // this will set the logging level as defined in debug.ts to DEBUG
-        setRxJsLoggingLevel(RxJsLoggingLevel.TRACE);
+        // forkJoin operator allows us to launch tasks in parallel and then get
+        // the results of those tasks together.
+        // trigger those requests at the same time
+        // send them to the backend at the same time
+        // have the backend serve the tasks in parallel
+        // wait for both the results of the course and lessons observable to return (wait until they are completed)
+        // and only then do something
+        forkJoin([(course$),(lessons$)])
+            .subscribe();
+        // ideal for performing long running calculations that will emit multiple values
+        // ideal for performing tasks in parallel
 
     }
+
 
     // ngAfterViewInit() {
 
