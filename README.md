@@ -70,7 +70,19 @@ concat(of(1,2,3), of(4,5,6)).subscribe(console.log);
 
 Imperative code handles side-effects directly, making it harder to scale and test. Reactive code separates data streams and transformations from execution, allowing clearer, declarative logic. Angular's use of RxJS promotes a reactive style that improves readability and maintainability.
 
-tap and shareReplay Operators
+Imperative:
+
+```ts
+http$.subscribe(courses => this.courses = courses);
+```
+
+Reactive:
+
+```ts
+this.courses$ = http$.pipe(map(...));
+```
+
+### tap and shareReplay Operators
 
 tap allows performing side effects (like logging) without altering the stream. shareReplay caches emissions from the source observable and shares them with future subscribers, ensuring a single execution and avoiding repeated side-effects like HTTP calls.
 
